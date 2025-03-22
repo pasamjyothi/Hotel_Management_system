@@ -58,16 +58,22 @@
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "ajax/settings_crud.php", true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        
             xhr.onload = function () {
-                if (this.responseText == 1&& general_data.shutdown==0) {
-                    alert('success','Site has been shutdown!');
+                if (this.responseText.trim() === "1") {
+                    let message = (val === 1) ? "Site has been shutdown!" : "Shutdown mode off!";
+                    alert(message); // Fixed alert syntax
                 } else {
-                    alert('success','Shutdown mode off!');
+                    alert("Failed to update shutdown mode!");
                 }
-                get_general();
+                get_general(); // Refresh settings
             };
-            xhr.send('&upd_shutdown='+val);
+        
+            xhr.send('upd_shutdown=' + val);
         }
+        
+        
+        
         function get_contacts() {
             let contacts_p_id = ['address', 'gmap', 'pn1', 'pn2', 'email', 'fb', 'insta', 'tw'];
             let iframe = document.getElementById('iframe'); 
@@ -95,7 +101,7 @@
         contacts_s_form.addEventListener('submit',function(e){
             e.preventDefault();
             upd_contacts();
-        })
+        });
         function upd_contacts(){
             let index =['address', 'gmap', 'pn1', 'pn2', 'email', 'fb', 'insta', 'tw','iframe'];
             let contacts_inp_id= ['address_inp', 'gmap_inp', 'pn1_inp', 'pn2_inp', 'email_inp', 'fb_inp', 'insta_inp', 'tw_inp','iframe_inp'];

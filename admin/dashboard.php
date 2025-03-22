@@ -41,7 +41,6 @@ adminLogin();
             <div class="col-lg-10 ms-auto p-4 overflow-hidden">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h3>DASHBOARD</h3>
-                    <h6 class="badge bg-danger py-2 px-3 rounded">Shutdown Mode is Active</h6>
                 </div>
                 <div class="row mb-4">
                     <div class="col-md-3 mb-4">

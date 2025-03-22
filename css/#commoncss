@@ -3,25 +3,21 @@
     --teal_hover:#279e8c;
   }
   
-  
   *{
     font-family: 'Poppins',sans-serif;
   }
   h-font{
     font-family: 'Merienda',cursive;
   }
+
   :root{
     --teal: #27e19t;
   }
-  input::-webkit-outer-spin-button,
+input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-input[type=number] {
-  -moz-appearance: textfield;
-}
-   
+}   
 .custom-bg{
       background-color:var(--teal);
       align-items: center;
@@ -38,3 +34,19 @@ input[type=number] {
     margin: 0 auto;
     height: 1.7px;
  }
+ .custom-alert{
+  position: fixed;
+  top: 80px;
+  right: 25;
+  z-index: 111;
+ }
+ .dropdown-menu {
+  z-index: 1050 !important;
+  position: absolute !important;
+}
+.dropdown-toggle {
+  position: relative;
+  z-index: 1050; /* Ensure it's above other elements */
+}
+
+
