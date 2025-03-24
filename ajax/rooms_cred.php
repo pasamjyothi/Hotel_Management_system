@@ -14,14 +14,15 @@ if($chk_avail['checkin']!=''&&$chk_avail['checkout']!=''){
 
     // Date validation checks
     if ($checkin_date == $checkout_date) {
-        echo "<h3 class='text-center text-danger'>Invalid Dates!</h3>";
+        echo "<h3 class='text-center text-danger'>Invalid Dates Entered!</h3>";
         exit;
     } elseif ($checkout_date < $checkin_date) {
-        $status = 'check_out_earlier';
-        $result = json_encode(['status' => $status]);
+        echo "<h3 class='text-center text-danger'>Invalid Dates Entered!</h3>";
+        exit;
     } elseif ($checkin_date < $today_date) {
-        $status = 'check_in_earlier';
-        $result = json_encode(['status' => $status]);
+        echo "<h3 class='text-center text-danger'>Invalid Dates Entered!</h3>";
+        exit;
+
     }
 }
 
@@ -32,6 +33,19 @@ $settings_q = "SELECT * FROM `settings` WHERE `sr_no`=1";
 $settings_r = mysqli_fetch_assoc(mysqli_query($con,$settings_q));
 $room_res=select("SELECT * FROM `rooms` WHERE `status`=? AND `removed`=? ORDER BY `id` DESC",[1,0],'ii');
 while($room_data=mysqli_fetch_assoc($room_res)){
+    if($chk_avail['checkin']!=''&&$chk_avail['checkout']!=''){
+    $tb_query = "SELECT COUNT(*) AS `total_bookings` FROM `booking_order` 
+                 WHERE booking_status=? AND room_id=? 
+                 AND check_out>? AND check_in<?";
+    
+    $values = ['booked', $room_data['id'],$chk_avail['checkin'], $chk_avail['checkout']];
+    $tb_fetch = mysqli_fetch_assoc(select($tb_query, $values, 'siss'));
+
+    if (($room_data['quantity'] - $tb_fetch['total_bookings']) == 0) {
+        continue;
+    }
+    }
+
     $fea_q=mysqli_query($con,"SELECT f.name FROM `features` f INNER JOIN `rooms_features` rfea ON f.id =rfea.features_id WHERE rfea.room_id = '$room_data[id]'");
    
     $features_data="";

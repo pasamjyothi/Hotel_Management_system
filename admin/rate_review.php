@@ -88,7 +88,7 @@ if (isset($_GET['del'])) {
     <div class="container-fluid" id="main-content">
         <div class="row">
             <div class="col-lg-10 ms-auto p-4 overflow-hidden">
-                <h3 class="mb-4">USER QUERIES</h3>
+                <h3 class="mb-4">RATINGS & REVIEWS</h3>
                 <?php if ($alert_msg): ?>
                     <div class="alert alert-<?= $alert_type ?> alert-dismissible fade show" role="alert">
                         <?= $alert_msg ?>
