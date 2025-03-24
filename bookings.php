@@ -61,32 +61,33 @@
 
                 $status_bg = "";
                 $btn = "";
-
                 if ($data['booking_status'] == 'booked') {
                     $status_bg = "bg-success";
+                
                     if ($data['arrival'] == 1) {
                         $btn = "<a href='generate_pdf.php?gen_pdf&id={$data['booking_id']}' class='btn text-light btn-sm btn-dark shadow-none'>Download PDF</a>";
-    
-                    }if($data['rate_review']==0){
-                        $btn="<button type='button' onclick='review_room($data[booking_id],$data[room_id])' data-bs-toggle='modal' data-bs-target='#reviewModal' class='btn btn-sm btn-success shadow-none'>Rate & Review</button>";
                     }
-                    
-                    else {
-                        $btn = "<button type='button' onclick='cancel_booking($data[booking_id])' class='btn btn-sm btn-danger shadow-none'>Cancel</button>";
+                
+                    if ($data['rate_review'] == 0) {
+                        $btn .= " <button type='button' onclick='review_room({$data['booking_id']},{$data['room_id']})' data-bs-toggle='modal' data-bs-target='#reviewModal' class='btn btn-sm btn-success shadow-none'>Rate & Review</button>";
+                    } else {
+                        $btn .= " <button type='button' onclick='cancel_booking({$data['booking_id']})' class='btn btn-sm btn-danger shadow-none'>Cancel</button>";
                     }
+                
                 } elseif ($data['booking_status'] == 'cancelled') {
                     $status_bg = "bg-danger";
-                    if($data['refund'] == 0) {
-                       $btn= "<span class='badge bg-primary'>Refund in process</span>" ;
+                    
+                    if ($data['refund'] == 0) {
+                        $btn = "<span class='badge bg-primary'>Refund in process</span>";
+                    } else {
+                        $btn = "<a href='generate_pdf.php?gen_pdf&id={$data['booking_id']}' class='btn text-light btn-sm btn-dark shadow-none'>Download PDF</a>";
                     }
-                    else{
-                        $btn="<a href='generate_pdf.php?gen_pdf&id={$data['booking_id']}' class='btn text-light btn-sm btn-dark shadow-none'>Download PDF</a>";
-                    }
-                } 
-                else {
+                
+                } elseif ($data['booking_status'] == 'payment_failed') {
                     $status_bg = "bg-warning";
                     $btn = "<a href='generate_pdf.php?gen_pdf&id={$data['booking_id']}' class='btn text-light btn-sm btn-dark shadow-none'>Download PDF</a>";
                 }
+                
 
                 echo <<<bookings
                 <div class='col-md-4 px-4 mb-4'>
@@ -135,9 +136,9 @@
                             <option value="1">Bad</option>
                         </select>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-4 col-lg-6">
                         <label class="form-label">Review</label>
-                        <textarea type="password" name="review" rows="3" required class="form-controk shadow-none"></textarea>
+                        <textarea type="password" name="review" rows="1" required class="form-controk shadow-none"></textarea>
                     </div>
                     <input type="hidden" name="booking_id">
                     <input type="hidden" name="room_id">

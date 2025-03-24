@@ -22,9 +22,13 @@ function alert(type, msg, position='body') {
         }, 3000);
         setTimeout(remAlert,2000);
     }
-function remAlert(){
-        document.getElementsByClassName('alert')[0].remove();
+    function remAlert() {
+    let alertBox = document.getElementById("alert-box");
+    if (alertBox) {
+        alertBox.remove();
+    }
 }
+
 function handleResponse(responseText) {
         if (responseText == 1) {
             alert('success', 'Changes saved!');

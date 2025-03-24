@@ -1,7 +1,7 @@
 <?php
 require(__DIR__ . '/admin/inc/db_config.php');
 require(__DIR__ . '/admin/inc/essentials.php');
-require_once __DIR__ . '/admin/inc/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 
 if(isset($_GET['gen_pdf'] )&& isset($_GET['id'])){

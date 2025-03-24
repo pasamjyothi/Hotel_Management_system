@@ -1,89 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+require(__DIR__ . '/admin/inc/db_config.php');
+require(__DIR__ . '/admin/inc/essentials.php');
+
+session_start();
+
+if (!isset($_GET['order']) || !isset($_SESSION['uId'])) {
+    redirect('index.php');
+}
+
+$order_id = $_GET['order'];
+
+$query = "SELECT * FROM `booking_order` WHERE `order_id` = ? AND `user_id` = ? AND `booking_status` != ?";
+$result = select($query, [$order_id, $_SESSION['uId'], 'booked'], 'sis');
+
+if (mysqli_num_rows($result) == 0) {
+    redirect('index.php');
+}
+
+$booking = mysqli_fetch_assoc($result);
+
+?>
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MahaRaj Hotel - Booking Status </title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-    <?php require('inc/links.php'); ?>
-    <style>
-        .pop:hover {
-            border-top-color: var(--teal) !important;
-            transform: scale(1.03);
-            transition: all 0.3s;
-        }
-        #main {
-            display: flex;
-            flex-wrap: wrap;
-            width: 100%;
-            gap: 30px;
-        }
-        .rating i {
-            font-size: 1.2rem;
-        }
-        .badge {
-            font-size: 0.9rem;
-            padding: 5px 10px;
-        }
-    </style>
+    <title>Payment Status</title>
 </head>
-<body class="bg-light">
-    <?php require('inc/header.php'); ?>
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-12 my-5 mb-4 px-4">
-                <h2 class="fw-bold h-font text-center">Payment Status</h2>
-            </div>
-
-            <?php
-              $frm_data=filteration($_GET);
-              if(!(isset($_SESSION['login'])&&$_SESSION['login']==true))
-              {
-                 redirect('index.php'); 
-              }
-              $booking_q="SELECT bo.*,bd.* FROM `booking_order` bo INNER JOIN `booking_details` bd ON bo.booking_id=bd.booking_id WHERE bo.order_id=? AND user_id=? AND bo.booking_status!=?";
-              $booking_res=select($booking_q,[$frm_data['order'],$_SESSION['uId']],'pending','sis');
-            if(mysqli_num_rows($booking_res)==0){
-                redirect('index.php');
-            }
-            $booking_fetch=mysqli_fetch_assoc($booking_res);
-            if($booking_fetch['trans_status']=="TXN_SUCCESS"){
-                echo<<<data
-                <div class="col-12 px-4">
-                <p class="fw-bold alert alert-success"
-                <i class="bi bi-check-circle-fill"></i>
-                Payment  done! Booking Successful.
-                <br><br>
-                <a href='bookings.php'>GO to Bookings</a>
-                </p>
-                </div>
-
-
-                data;
-            }else{
-                echo<<<data
-                <div class="col-12 px-4">
-                <p class="fw-bold alert alert-danger"
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                Payment  failed! $booking_fetch[trans_resp_msg]
-                <br><br>
-                <a href='bookings.php'>GO to Bookings</a>
-                </p>
-                </div>
-                data;
-
-            }
-            ?>
-
-        </div>
-    </div>
-
-    <?php require('inc/footer.php'); ?>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
+<body>
+    <?php require('inc/header.php');?>
+    <h2>Payment Status</h2>
+    <?php if ($booking['trans_status'] === 'success'): ?>
+        <p>Payment successful! Your booking is confirmed.</p>
+    <?php else: ?>
+        <p>Payment failed. Please try again.</p>
+    <?php endif; ?>
+    <a href="bookings.php">Go to Bookings</a>
+    <?php require('inc/footer.php');?>
 </body>
 </html>

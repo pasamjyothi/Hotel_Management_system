@@ -85,34 +85,27 @@
                 </button>
             </div>
         </div>
-        <?php
+        <!-- Room Details Section -->
+        <div class="col-lg-5 col-md-12 px-4">
+            <div class="card shadow-sm border-0 rounded-3 p-4">
+
+                <h4 class="mb-3">₹<?php echo $room_data['price']; ?> per night</h4>
+                <?php
         $rating_q="SELECT AVG(rating) AS `avg_rating` FROM `rating_review` WHERE `room_id`='$room_data[id]' ORDER BY `sr_no` DESC LIMIT 20";
           $rating_res=mysqli_query($con,$rating_q);
           $rating_data="";
           $rating_fetch=mysqli_fetch_assoc($rating_res);
           if($rating_fetch['avg_rating']!=NULL){
-            $rating_data="<div class='rating mb-4'>
-                 <h6 class='mb-1'>Rating</h6> 
-                <span class='badge rounded-pill bg-light'>";
                 for($i=0;$i<$rating_fetch['avg_rating'];$i++){
                        $rating_data.=" <i class='bi bi-star-fill text-warning'></i>";
                }
-                $rating_data.="</span>
-              </div>";
           }
+          echo<<<rating
+          <div class="mb-3">
+          $rating_data
+          </div>
+          rating;
           ?>
-        <!-- Room Details Section -->
-        <div class="col-lg-5 col-md-12 px-4">
-            <div class="card shadow-sm border-0 rounded-3 p-4">
-                <h4 class="mb-3">₹<?php echo $room_data['price']; ?> per night</h4>
-
-                <div class="rating mb-3">
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                </div>
-
                 <?php
                 // Fetch Features
                 $fea_q = mysqli_query($con, "SELECT f.name FROM `features` f INNER JOIN `rooms_features` rfea ON f.id = rfea.features_id WHERE rfea.room_id = '$room_data[id]'");
@@ -200,19 +193,6 @@
             }
           }
         ?>
-                 <div>
-                 <div class="d-flex align-items-center mb-2">
-                    <img src="image/star.png" width="30px">
-                    <h6 class="m-0 ms-2">Jyothi</h6>
-                </div>
-                <p>The hotel was in a great location The staff were friendly and helpful</p>
-                <div class="rating">           
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                </div>
-                 </div>
             </div>
         </div>
     </div>

@@ -15,7 +15,7 @@ if (isset($_POST['get_bookings'])) {
               AND (bo.booking_status = ? AND bo.refund = ?)
               ORDER BY bo.booking_id ASC";
 
-    $res = select($query, ["%$frm_data[search]%", "%$frm_data[search]%", "%$frm_data[search]%", "cancelled",0], "sssss");
+    $res = select($query, ["%$frm_data[search]%", "%$frm_data[search]%", "%$frm_data[search]%", "cancelled", 0], "sssss");
 
     $i = 1;
     $table_data = "";
@@ -54,7 +54,7 @@ if (isset($_POST['get_bookings'])) {
                 </td>
                 <td>
                     <button type='button' onclick='refund_booking($data[booking_id])' class='btn text-light btn-sm fw-bold btn-success shadow-none'>
-                        <i class='bi bi-cash-stack'></i>Refund
+                        <i class='bi bi-cash-stack'></i> Refund
                     </button>
                 </td>
             </tr>
@@ -65,16 +65,27 @@ if (isset($_POST['get_bookings'])) {
     echo $table_data;
 }
 
-if(isset($_POST['refund_booking'])){
-    $frm_data=filteration($_POST);
+// Refund booking logic
+if (isset($_POST['refund_booking'])) {
+    $frm_data = filteration($_POST);
 
+    // Ensure booking exists and is cancelled
+    $check_query = "SELECT * FROM `booking_order` WHERE `booking_id`=? AND `booking_status`='cancelled' AND `refund`=0";
+    $check_res = select($check_query, [$frm_data['booking_id']], 'i');
 
+    if (mysqli_num_rows($check_res) > 0) {
+        // Proceed with the refund update
+        $query = "UPDATE `booking_order` SET `refund`=1 WHERE `booking_id`=?"; 
+        $values = [$frm_data['booking_id']];
+        $res = update($query, $values, 'i');
 
-    $query="UPDATE `booking_order`SET `refund`=? WHERE `booking_id`=?"; 
-    $values=[1,$frm_data['booking_id']];
-    $res=update($query,$values,'ii');
-    echo $res;
-
-
+        if ($res) {
+            echo "1";  // Success response
+        } else {
+            echo "0";  // Failure response
+        }
+    } else {
+        echo "0";  // No matching booking found or already refunded
+    }
 }
 ?>

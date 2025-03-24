@@ -23,10 +23,24 @@
     gap: 30px;
 }
 
+
+
 </style>
 </head>
 <body class="bg-light">
-    <?php require('inc/header.php');
+    <?php 
+    require('inc/header.php');
+    $checkin_default='';
+    $checkout_default='';
+    $adult_default='';
+    $children_default='';
+    if(isset($_GET['check_availability'])){
+        $frm_data=filteration($_GET);
+        $checkin_default=$frm_data['checkin'];
+        $checkout_default=$frm_data['checkout'];
+        $adult_default=$frm_data['adult'];
+        $children_default=$frm_data['children'];
+    }
     ?>
     <div class="my-5 px-4">
         <h2 class="fw-bold h-font text-center" >OUR ROOMS</h2>
@@ -48,25 +62,29 @@
                                 <button id="chk_avail_btn" onclick="chk_avail_clear()" class="btn btn-sm shadow-none text-secondary">Reset</button>
                             </h5>
                             <label class="form-label">Check-in</label>
-                            <input type="date" id="checkin" class="form-control shadow-none mb-3" name="checkin" onchange="chk_avail_filter()">
+                            <input type="date" id="checkin" class="form-control shadow-none mb-3" name="checkin" value="<?php echo $checkin_default ?>" onchange="chk_avail_filter()">
 
                             <label class="form-label">Check-out</label>
-                            <input type="date" id="checkout" class="form-control shadow-none" name="checkout" onchange="chk_avail_filter()">
+                            <input type="date" id="checkout" class="form-control shadow-none" name="checkout" value="<?php echo $checkout_default ?>" onchange="chk_avail_filter()">
                         </div>
                         <div class="border bg-light p-4 rounded mb-4">
-                            <h5 class="mb-3" style="font-size: 18px;">FACILITIES</h5>
-                            <div class="mb-2">
-                                <input type="checkbox" id="f1" class="form-check-input shadow-none me-1">
-                                <label class="form-check-label" for="f1">Wifi</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="checkbox" id="f2" class="form-check-input shadow-none me-1">
-                                <label class="form-check-label" for="f2">Facility T.V</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="checkbox" id="f3" class="form-check-input shadow-none me-1">
-                                <label class="form-check-label" for="f3">AC</label>
-                            </div>
+                        <h5 class="mb-3 d-flex align-items-center justify-content-center" style="font-size: 18px;">
+                                <span>FACILITIES</span>
+                                <button id="facilities_btn" onclick="facilities_clear()" class="btn btn-sm shadow-none text-secondary">Reset</button>
+                            </h5>
+
+                            <?php
+                            $facilities_q=selectAll('facilities');
+                            while($row=mysqli_fetch_assoc($facilities_q)){
+                                echo<<<facilities
+                                    <div class="mb-2">
+                                        <input type="checkbox" onclick="fetch_rooms()" name="facilities" value="$row[id]" class="form-check-input shadow-none me-1" id="$row[id]">
+                                        <label class="form-check-label" for="$row[id]">$row[name]</label>
+                                    </div>
+                                facilities;
+                            }
+                            
+                            ?>
                         </div>
 
 
@@ -79,11 +97,11 @@
                             <div class="d-flex">
                                 <div class="me-3">
                                     <label class="form-label">Adults</label>
-                                    <input type="number" min="1" id="adults" class="form-control shadow-none">
+                                    <input type="number" min="1" id="adults" oninput="guests_filter()" value="<?php echo $adult_default ?>" class="form-control shadow-none">
                                 </div>
                                 <div>
                                     <label class="form-label">Children</label>
-                                    <input type="number" min="1" class="form-control shadow-none">
+                                    <input type="number" min="1" id="children" oninput="guests_filter()" value="<?php echo $children_default ?>" class="form-control shadow-none">
                                 </div>
                             </div>
                         </div>
@@ -105,27 +123,36 @@
 let checkin = document.getElementById('checkin');
 let checkout = document.getElementById('checkout');
 let chk_avail_btn = document.getElementById('chk_avail_btn');
+let adults = document.getElementById('adults');
+let children = document.getElementById('children');
+let guests_btn = document.getElementById('guests_btn');
+let facilities_btn = document.getElementById('facilities_btn');
 
 function fetch_rooms() {
-    if (!checkin || !checkout) {
-        console.error("Check-in or Check-out element not found!");
-        return;
-    }
-    let chk_avail=JSON.stringify({
-        checkin:checkin.value,
-        checkout:checkout.value
+    let checkin = document.getElementById('checkin').value;
+    let checkout = document.getElementById('checkout').value;
+    let adults = document.getElementById('adults').value || 0;
+    let children = document.getElementById('children').value || 0;
+
+    let facilities = [];
+    document.querySelectorAll('[name="facilities"]:checked').forEach((checkbox) => {
+        facilities.push(checkbox.value);
     });
 
-    console.log("Fetching rooms...");
+    let params = new URLSearchParams();
+    params.append('fetch_rooms', '1');
+    params.append('chk_avail', JSON.stringify({ checkin, checkout }));
+    params.append('guests', JSON.stringify({ adults, children }));
+    params.append('facility_list', JSON.stringify(facilities));
+
     let xhr = new XMLHttpRequest();
-    xhr.open("GET", "ajax/rooms_cred.php?fetch_rooms&chk_avail="+chk_avail, true);
+    xhr.open("GET", `ajax/rooms_cred.php?${params.toString()}`, true);
 
     xhr.onprogress = function () {
-        document.getElementById('rooms-data').innerHTML = `
-            <div class="spinner-border text-info mb-3 d-block mx-auto" id="loader" role="status">
+        document.getElementById('rooms-data').innerHTML = 
+            `<div class="spinner-border text-info mb-3 d-block mx-auto" id="loader" role="status">
                 <span class="visually-hidden">Loading...</span>
-            </div>
-        `;
+            </div>`;
     };
 
     xhr.onload = function () {
@@ -137,8 +164,10 @@ function fetch_rooms() {
         console.error("Request failed.");
     };
 
-    xhr.send("checkin=" + checkin.value + "&checkout=" + checkout.value);
+    xhr.send();
 }
+
+
 
 function chk_avail_filter() {
     if (checkin.value !== '' && checkout.value !== '') {
@@ -153,8 +182,31 @@ function chk_avail_clear() {
     chk_avail_btn.classList.add('d-none');
     fetch_rooms();
 }
+function guests_filter(){
+    let adultsValue = adults.value;
+    let childrenValue = children.value;
+    
+    console.log("Adults:", adultsValue, "Children:", childrenValue);  // Debugging
 
-// Ensure event listeners are attached after DOM loads
+    fetch_rooms();
+    guests_btn.classList.remove('d-none');
+}
+
+function guests_clear(){
+    adults.value='';
+    children.value='';
+    fetch_rooms();
+    guests_btn.classList.add('d-none');
+}
+function facilities_clear() {
+    document.querySelectorAll('[name="facilities"]').forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+    fetch_rooms();
+    facilities_btn.classList.add('d-none');
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
     fetch_rooms();
 });

@@ -104,34 +104,41 @@ input[type=number] {
   <div class="row">
     <div class="col-lg-12 bg-white shadow p-4 rounded">
       <h5>Check Booking Availability</h5>
-      <form>
+      <form action="rooms.php">
         <div class="row">
           <div class="col-lg-3">
             <label class="form-label" style="font-weight: 500;">Check-in</label>
-          <input type="date" class="form-control shadow-none">
+          <input type="date" class="form-control shadow-none" name="checkin" required>
           </div>
           <div class="col-lg-3">
             <label class="form-label" style="font-weight: 500;">Check-Out</label>
-          <input type="date" class="form-control shadow-none">
+          <input type="date" class="form-control shadow-none" name="checkout" required>
           </div>
           <div class="col-lg-3">
             <label class="form-label" style="font-weight: 500;">Adult</label>
-            <select class="form-select shadow-none">
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+            <select class="form-select shadow-none" name="adult">
+              <?php
+              $guests_q=mysqli_query($con,"SELECT MAX(adult) AS `max_adult`, MAX(children) AS `max_children` FROM `rooms` WHERE `status`=1 AND `removed`='0'");
+              $guests_res=mysqli_fetch_assoc($guests_q);
+              for($i=1;$i<=$guests_res['max_adult'];$i++){
+                echo"<option value='$i'>$i</option>";
+              }
+              ?>
             </select>
           </div>
           <div class="col-lg-3">
             <label class="form-label" style="font-weight: 500;">Children</label>
-            <select class="form-select shadow-none">
-              <option selected>Open this select menu</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+            <select class="form-select shadow-none" name="children">
+              <?php
+              for($i=1;$i<=$guests_res['max_children'];$i++){
+                echo"<option value='$i'>$i</option>";
+
+              }
+
+              ?>
             </select>
           </div>
+          <input type="hidden" name="check_availability">
           <div class="text-center my-1 p-3">
             <button type="submit" class="btn btn-sm btn-dark shadow-none custom-bg">Submit</button>
           </div>
@@ -279,7 +286,7 @@ input[type=number] {
               echo<<<slides
                   <div class="swiper-slide bg-white p-4">
                       <div class="profile d-flex align-items-center p-4">
-                        <img src="$img_path$row[picture]" class="ronded-circle" loading="lazy" width="30px">
+                        <img src="$img_path$row[profile]" class="ronded-circle" loading="lazy" width="30px">
                         <h6 class="m-0 ms-2">$row[uname]</h6>
                       </div>
                       <p>$row[review]</p>
@@ -292,49 +299,12 @@ input[type=number] {
             }
           }
         ?>
-        <div class="swiper-slide bg-white p-4">
-          <div class="profile d-flex align-items-center p-4">
-            <img src="image/star.png" width="30px">
-            <h6 class="m-0 ms-2">Jyothi</h6>
-          </div>
-          <p>The hotel was in a great location The staff were friendly and helpful</p>
-          <div class="rating">           
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-          </div>
-        </div>  
-        <div class="swiper-slide bg-white p-4">
-          <div class="profile d-flex align-items-center p-4">
-            <img src="image/star.png" width="30px">
-            <h6 class="m-0 ms-2">Jyothi</h6>
-          </div>
-          <p>The hotel was in a great location The staff were friendly and helpful</p>
-          <div class="rating">           
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-          </div>
-        </div> 
-        <div class="swiper-slide bg-white p-4">
-          <div class="profile d-flex align-items-center p-4">
-            <img src="image/star.png" width="30px">
-            <h6 class="m-0 ms-2">Jyothi</h6>
-          </div>
-          <p>The hotel was in a great location The staff were friendly and helpful</p>
-          <div class="rating">           
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-            <i class="bi bi-star-fill text-warning"></i>
-          </div>
-        </div> 
       </div>
       <div class="swiper-pagination">
 
       </div>
+    </div>
+</div>
     </div>
       <div class="col-lg-12 text-center mt-5">
       <a href="about.php" class="btn bt-sm btn-outline-dark rounded-0 fw-bold shadow-none">Know More</a>

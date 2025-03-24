@@ -136,7 +136,7 @@ if (isset($_GET['del'])) {
                                             <td>$row[email]</td>
                                             <td>$row[subject]</td>
                                             <td>$row[message]</td>
-                                            <td>$row[date]</td>
+                                            <td>$row[datentime]</td>
                                             <td>$actions</td>
                                         </tr>
                                         QUERY;

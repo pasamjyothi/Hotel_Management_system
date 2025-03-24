@@ -142,7 +142,7 @@ if (isset($_GET['del'])) {
                                             <td>$row[rating]</td>
                                             <td>$row[review]</td>
                                             <td>$date</td>
-                                            <td>$seen</td>
+                                            <td>$actions</td>
                                         </tr>
                                         QUERY;
                                         $i++;

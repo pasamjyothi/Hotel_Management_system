@@ -15,7 +15,7 @@ if (isset($_POST['get_bookings'])) {
               AND bo.booking_status = ? AND bo.arrival = ?
               ORDER BY bo.booking_id ASC";
 
-    $res = select($query, ["%$frm_data[search]%", "%$frm_data[search]%", "%$frm_data[search]%", "pending",0], "sssss");
+    $res = select($query, ["%$frm_data[search]%", "%$frm_data[search]%", "%$frm_data[search]%", "booked",0], "sssss");
 
     $i = 1;
     $table_data = "";
