@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MahaRaj Hotel</title>
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <link rel="stylesheet" href="css/#commoncss">
 <?php require('inc/links.php');?>
@@ -17,7 +21,8 @@
 </style>
 </head>
 <body class="bg-light">
-    <?php require('inc/header.php')?>
+    <?php require('inc/header.php');
+    ?>
     <div class="my-5 px-4">
         <h2 class="fw-bold h-font text-center" >CONTACT US</h2>
         <div class="h-line bg-dark"></div>
@@ -76,32 +81,50 @@
         
 <div class="col-lg-6 col-md-6 mb-6 px-4">
         <div class="bg-white rounded shadow p-4">       
-            <form>           
-            <h5>Send a message</h5>
+            <form method="POST">           
+               <h5>Send a message</h5>
                 <div class="mt-3 col-md-12">
                     <label class="form-label" style="font-weight: 500;">Name</label>
-                    <input type="text" class="form-control shadow-none">      
+                    <input name="name" required type="text" class="form-control shadow-none">      
                 </div>
                 <div class="mt-3">
                     <label class="form-label" style="font-weight: 500;">Email</label>
-                    <input type="email" class="form-control shadow-none">      
+                    <input  name="email" required type="email" class="form-control shadow-none">      
                 </div>
                 <div class="mt-3">
                     <label class="form-label" style="font-weight: 500;">Subject</label>
-                    <input type="text" class="form-control shadow-none">      
+                    <input  name="subject" required  type="text" class="form-control shadow-none">      
                 </div>
                 <div class="mt-3">
                 <label class="form-label" style="font-weight: 500;">Message</label>
-              <textarea class="form-control shadow-none" rows="5" style="resize: none;"></textarea>
+              <textarea  name="message" required class="form-control shadow-none" rows="5" style="resize: none;"></textarea>
               </div>
               <div class="text-center my-1 p-3">
-            <button type="submit" class="btn  btn-outline-dark shadow-none custom-bg">Submit</button>
-          </div>
+               <button type="submit"  name="send" class="btn  btn-outline-dark shadow-none custom-bg ">Submit</button>
+              </div>
             </form>
         </div>
-</div>      
+    </div>      
 </div>
 </div>
+
+<?php
+
+if(isset($_POST['send'])){
+    $frm_data=filteration($_POST);
+    $q="INSERT INTO `user_queries`( `name`, `email`, `subject`, `message`) VALUES (?,?,?,?)";
+     $values=[$frm_data['name'],$frm_data['email'],$frm_data['subject'],$frm_data['message']];
+     $res=insert($q,$values,'ssss');
+     if($res==1){
+        alert('success','Mail sent');
+     }
+     else{
+        alert('error','Server Down! Try again Later');
+     }
+}
+?>
 <?php require('inc/footer.php');?>
+<!-- Bootstrap JS (for dropdowns) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

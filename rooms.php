@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MahaRaj Hotel-Rooms</title>
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
     <?php require('inc/links.php');?>
 <style>
@@ -19,17 +23,32 @@
     gap: 30px;
 }
 
+
+
 </style>
 </head>
 <body class="bg-light">
-    <?php require('inc/header.php');?>
+    <?php 
+    require('inc/header.php');
+    $checkin_default='';
+    $checkout_default='';
+    $adult_default='';
+    $children_default='';
+    if(isset($_GET['check_availability'])){
+        $frm_data=filteration($_GET);
+        $checkin_default=$frm_data['checkin'];
+        $checkout_default=$frm_data['checkout'];
+        $adult_default=$frm_data['adult'];
+        $children_default=$frm_data['children'];
+    }
+    ?>
     <div class="my-5 px-4">
         <h2 class="fw-bold h-font text-center" >OUR ROOMS</h2>
         <div class="h-line bg-dark"></div>
     </div>
 <div class="container">
     <div id="main">
-        <div class="col-lg-4 col-md-12 mb-lg-0 mb-4 px-lg-0">
+        <div class="col-lg-4 col-md-12 mb-lg-0 mb-4 ps-4 px-lg-0">
             <nav class="navbar  navbar-expand-lg navbar-light bg-white rounded shadow">
                 <div class="container-fluid flex-lg-column align-items-stretch ">
                     <h4 class="mt-2">FILTERS</h4>
@@ -38,37 +57,51 @@
                     </button>
                     <div class="collapse navbar-collapse flex-column align-items-stretch mt-2" id="filterDropdown">
                         <div class="border bg-light p-4 rounded mb-4">
-                            <h5 class="mb-3" style="font-size: 18px;">CHECK AVAILABILITY</h5>
+                            <h5 class="mb-3 d-flex align-items-center justify-content-center" style="font-size: 18px;">
+                                <span>CHECK AVAILABILITY</span>
+                                <button id="chk_avail_btn" onclick="chk_avail_clear()" class="btn btn-sm shadow-none text-secondary">Reset</button>
+                            </h5>
                             <label class="form-label">Check-in</label>
-                            <input type="date" class="form-control shadow-none">
+                            <input type="date" id="checkin" class="form-control shadow-none mb-3" name="checkin" value="<?php echo $checkin_default ?>" onchange="chk_avail_filter()">
+
                             <label class="form-label">Check-out</label>
-                            <input type="date" class="form-control shadow-none">
+                            <input type="date" id="checkout" class="form-control shadow-none" name="checkout" value="<?php echo $checkout_default ?>" onchange="chk_avail_filter()">
                         </div>
                         <div class="border bg-light p-4 rounded mb-4">
-                            <h5 class="mb-3" style="font-size: 18px;">FACILITIES</h5>
-                            <div class="mb-2">
-                                <input type="checkbox" id="f1" class="form-check-input shadow-none me-1">
-                                <label class="form-check-label" for="f1">Wifi</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="checkbox" id="f2" class="form-check-input shadow-none me-1">
-                                <label class="form-check-label" for="f2">Facility T.V</label>
-                            </div>
-                            <div class="mb-2">
-                                <input type="checkbox" id="f3" class="form-check-input shadow-none me-1">
-                                <label class="form-check-label" for="f3">AC</label>
-                            </div>
+                        <h5 class="mb-3 d-flex align-items-center justify-content-center" style="font-size: 18px;">
+                                <span>FACILITIES</span>
+                                <button id="facilities_btn" onclick="facilities_clear()" class="btn btn-sm shadow-none text-secondary">Reset</button>
+                            </h5>
+
+                            <?php
+                            $facilities_q=selectAll('facilities');
+                            while($row=mysqli_fetch_assoc($facilities_q)){
+                                echo<<<facilities
+                                    <div class="mb-2">
+                                        <input type="checkbox" onclick="fetch_rooms()" name="facilities" value="$row[id]" class="form-check-input shadow-none me-1" id="$row[id]">
+                                        <label class="form-check-label" for="$row[id]">$row[name]</label>
+                                    </div>
+                                facilities;
+                            }
+                            
+                            ?>
                         </div>
+
+
+
                         <div class="border bg-light p-4 rounded mb-4">
-                            <h5 class="mb-3" style="font-size: 18px;">GUESTS</h5>
+                            <h5 class="mb-3 d-flex align-items-center justify-content-center" style="font-size: 18px;">
+                                <span>GUESTS</span>
+                                <button id="guests_btn" onclick="guests_clear()" class="btn btn-sm shadow-none text-secondary">Reset</button>
+                            </h5>
                             <div class="d-flex">
                                 <div class="me-3">
                                     <label class="form-label">Adults</label>
-                                    <input type="number" class="form-control shadow-none">
+                                    <input type="number" min="1" id="adults" oninput="guests_filter()" value="<?php echo $adult_default ?>" class="form-control shadow-none">
                                 </div>
                                 <div>
                                     <label class="form-label">Children</label>
-                                    <input type="number" class="form-control shadow-none">
+                                    <input type="number" min="1" id="children" oninput="guests_filter()" value="<?php echo $children_default ?>" class="form-control shadow-none">
                                 </div>
                             </div>
                         </div>
@@ -76,80 +109,109 @@
                 </div>
             </nav>
         </div>
-        <div class="col-lg-9 col-md-12 px-4" id="sec2">
-            <div class="card mb-4 border-0 shadow">
-                <div class="row g-0 p-3 align-items-center">
-                    <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
-                        <img src="image/img2.png" class="img-fluid rounded">
-                    </div>
-                    <div class="col-md-5 px-lg-3 px-md-3 px-0">
-                            <h5 class="mb-3">Deluxe Room</h5>
-                            <div class="features mb-3">
-                                <h6 class="mb-1">Features</h6>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Beds</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Bathrooms</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Sofas</span>
-                            </div>
-                            <div class="facilities mb-4">
-                                <h6 class="mb-1"> Facilities</h6>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">wifi</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">Television</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">AC</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">Geyser</span>
+        <div class="col-lg-9 col-md-12 px-4" id="rooms-data">
 
-                            </div>
-                            <div class="facilities mb-4">
-                                    <h6 class="mb-1">Guests</h6>
-                                    <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">3 Adults</span>
-                                    <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Childrens</span>
-                            </div>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <h6 class="mb-4">1000/- per night</h6> 
-                        <a href="#" class="btn btn-sm w-100 custom-bg shadow-none mb-2 btn-outline-dark">Book Now</a>
-                        <a href="#" class="btn btn-sm  w-100 btn-outline-dark shadow-none">More Details</a>
-                    </div>
-
-                </div>
-            </div>
-            <div class="card mb-4 border-0 shadow">
-                <div class="row g-0 p-3 align-items-center">
-                    <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
-                        <img src="image/img1.png" class="img-fluid rounded">
-                    </div>
-                    <div class="col-md-5 px-lg-3 px-md-3 px-0">
-                            <h5 class="mb-3">Deluxe Room</h5>
-                            <div class="features mb-3">
-                                <h6 class="mb-1">Features</h6>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Beds</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Bathrooms</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Sofas</span>
-                            </div>
-                            <div class="facilities mb-4">
-                                <h6 class="mb-1"> Facilities</h6>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">wifi</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">Television</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">AC</span>
-                                <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">Geyser</span>
-
-                            </div>
-                            <div class="facilities mb-4">
-                                    <h6 class="mb-1">Guests</h6>
-                                    <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">3 Adults</span>
-                                    <span class="badge rounded-pill bg-light text-dark mb-3 text-wrap lh-base">2 Childrens</span>
-                            </div>
-                    </div>
-                    <div class="col-md-2 text-center">
-                        <h6 class="mb-4">1000/- per night</h6> 
-                        <a href="#" class="btn btn-sm w-100 custom-bg shadow-none mb-2 btn-outline-dark">Book Now</a>
-                        <a href="#" class="btn btn-sm  w-100 btn-outline-dark shadow-none">More Details</a>
-                    </div>
-
-                </div>
-            </div>
         </div>
     </div>
 </div>
+
+
+
+<!-- Bootstrap JS (for dropdowns) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let checkin = document.getElementById('checkin');
+let checkout = document.getElementById('checkout');
+let chk_avail_btn = document.getElementById('chk_avail_btn');
+let adults = document.getElementById('adults');
+let children = document.getElementById('children');
+let guests_btn = document.getElementById('guests_btn');
+let facilities_btn = document.getElementById('facilities_btn');
+
+function fetch_rooms() {
+    let checkin = document.getElementById('checkin').value;
+    let checkout = document.getElementById('checkout').value;
+    let adults = document.getElementById('adults').value || 0;
+    let children = document.getElementById('children').value || 0;
+
+    let facilities = [];
+    document.querySelectorAll('[name="facilities"]:checked').forEach((checkbox) => {
+        facilities.push(checkbox.value);
+    });
+
+    let params = new URLSearchParams();
+    params.append('fetch_rooms', '1');
+    params.append('chk_avail', JSON.stringify({ checkin, checkout }));
+    params.append('guests', JSON.stringify({ adults, children }));
+    params.append('facility_list', JSON.stringify(facilities));
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", `ajax/rooms_cred.php?${params.toString()}`, true);
+
+    xhr.onprogress = function () {
+        document.getElementById('rooms-data').innerHTML = 
+            `<div class="spinner-border text-info mb-3 d-block mx-auto" id="loader" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>`;
+    };
+
+    xhr.onload = function () {
+        console.log("Response received:", this.responseText);
+        document.getElementById('rooms-data').innerHTML = this.responseText;
+    };
+
+    xhr.onerror = function () {
+        console.error("Request failed.");
+    };
+
+    xhr.send();
+}
+
+
+
+function chk_avail_filter() {
+    if (checkin.value !== '' && checkout.value !== '') {
+        fetch_rooms();
+        chk_avail_btn.classList.remove('d-none');
+    }
+}
+
+function chk_avail_clear() {
+    checkin.value = '';
+    checkout.value = '';
+    chk_avail_btn.classList.add('d-none');
+    fetch_rooms();
+}
+function guests_filter(){
+    let adultsValue = adults.value;
+    let childrenValue = children.value;
+    
+    console.log("Adults:", adultsValue, "Children:", childrenValue);  // Debugging
+
+    fetch_rooms();
+    guests_btn.classList.remove('d-none');
+}
+
+function guests_clear(){
+    adults.value='';
+    children.value='';
+    fetch_rooms();
+    guests_btn.classList.add('d-none');
+}
+function facilities_clear() {
+    document.querySelectorAll('[name="facilities"]').forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+    fetch_rooms();
+    facilities_btn.classList.add('d-none');
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetch_rooms();
+});
+
+</script>
 <?php require('inc/footer.php');?>
 </body> 
 </html>

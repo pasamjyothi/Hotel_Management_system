@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MahaRaj Hotel-About</title>
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <?php require('inc/links.php')?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="css/#commoncss">
@@ -78,11 +83,11 @@
 <div class="container px-4">
     <div class="swiper swiper-container">
         <div class="swiper-wrapper mb-5">
-        <?php
-$about_r = selectAll('team_details'); 
-$path = ABOUT_IMG_PATH; // Define the base image path
+<?php
+     $about_r = selectAll('team_details'); 
+     $path = ABOUT_IMG_PATH; 
 
-while ($row = mysqli_fetch_assoc($about_r)) {
+  while ($row = mysqli_fetch_assoc($about_r)) {
     $img_path = $path . $row['picture']; // Construct the full image path
     $name = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8'); // Escape the name for security
 
@@ -98,6 +103,8 @@ while ($row = mysqli_fetch_assoc($about_r)) {
         <div class="swiper-pagination"></div>
     </div>
 </div>
+<!-- Bootstrap JS (for dropdowns) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <script>
     var swiper = new Swiper(".swiper-container", {
