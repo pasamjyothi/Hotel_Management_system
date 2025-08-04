@@ -1,4 +1,5 @@
-
+CREATE DATABASE hotel;
+USE hotel;
 CREATE TABLE user_queries (
     sr_no INT(11) AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -184,4 +185,5 @@ INSERT INTO admin_cred (admin_name, admin_pass)
 VALUES ('pasamjyothi23@gmail.com', 'prudhvi25');
 INSERT INTO `settings` (`sr_no`, `site_title`, `site_about`, `shutdown`)
 VALUES (1, 'Green Park Resort', 'A luxury beach resort offering calm, peace, and premium service.', NULL);
+
 
