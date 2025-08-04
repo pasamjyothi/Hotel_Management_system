@@ -24,7 +24,7 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
 - *Tool*: XAMPP (Apache + MySQL)
 
 
-## Getting Started (Local Setup)
+## Implementation Steps
 
 1. *Clone the repository*:
    git clone https://github.com/pasamjyothi/Hotel_Management_system.git
@@ -38,6 +38,7 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
 9. Open the link localhost/Hotel_Management_System/admin/index.php to run admin pages
 10. 10. Add the facilities and images of website into the website to add directly into the website   
    
+
 
 
 
