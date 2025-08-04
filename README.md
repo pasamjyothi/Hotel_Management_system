@@ -3,7 +3,6 @@
 
 This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, and MySQL. It enables users to book rooms, manage hotel reservations, handle customer details, and perform admin operations through an intuitive web interface.
 
----
 
 ## 📌 Features
 
@@ -38,6 +37,7 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
 9. Open the link localhost/Hotel_Management_System/admin/index.php to run admin pages
 10. Add the facilities and images of website into the website to add directly into the website   
    
+
 
 
 
