@@ -28,6 +28,9 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
 
 1. *Clone the repository*:
    git clone https://github.com/pasamjyothi/Hotel_Management_system.git
+   cd Hotel_Management_system
    
+   
+
 
 
