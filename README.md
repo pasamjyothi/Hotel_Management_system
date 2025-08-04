@@ -28,9 +28,17 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
 
 1. *Clone the repository*:
    git clone https://github.com/pasamjyothi/Hotel_Management_system.git
-   cd Hotel_Management_system
+2. cd Hotel_Management_system
+3. Go to Xampp PHPMyadmin
+4. Go to New
+5. import the hotel.sql file in the code and click on go
+6. This will create tables successfully in the database of hotel
+7. Make Sure you start your Apache and MYSQL server in xampp
+8.Go to Browser open the link localhost/Hotel_Management_System/index.php to run the hotel website
+9.Open the link localhost/Hotel_Management_System/admin/index.php to run admin pages
+10.Add the facilities and images of website into the website to add directly into the website   
    
-   
+
 
 
 
