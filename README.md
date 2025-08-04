@@ -36,8 +36,9 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
 7. Make Sure you start your Apache and MYSQL server in xampp
 8. Go to Browser open the link localhost/Hotel_Management_System/index.php to run the hotel website
 9. Open the link localhost/Hotel_Management_System/admin/index.php to run admin pages
-10. 10. Add the facilities and images of website into the website to add directly into the website   
+10. Add the facilities and images of website into the website to add directly into the website   
    
+
 
 
 
