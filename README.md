@@ -42,8 +42,10 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
 Deployment Links
 Hotel Website Link:
 https://hotelgreenpark.infinityfreeapp.com/index.php
+
 Admin Page:
 https://hotelgreenpark.infinityfreeapp.com/admin/index.php
+
 
 
 
