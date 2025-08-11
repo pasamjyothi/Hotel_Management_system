@@ -39,6 +39,7 @@ This is a Hotel Management System developed using HTML, CSS, JavaScript, PHP, an
    
 ##🎥 [Watch Project Demo Video (Google Drive)]
      https://drive.google.com/file/d/1l4cwJZnyKFZSETfKnkANAAny_WwGM4Q2/view?usp=drive_link
+     
 Deployment Links
 
 Hotel Website Link:
@@ -46,6 +47,7 @@ https://hotelgreenpark.infinityfreeapp.com/index.php
 
 Admin Page:
 https://hotelgreenpark.infinityfreeapp.com/admin/index.php
+
 
 
 
